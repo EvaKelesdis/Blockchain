@@ -75,14 +75,17 @@ contract junior_database_administrator {
          return 0;
     }
     
-    
-    
      function bachelors() internal returns (bool){
            if ((Compare(bachelor_degree,"ComputerScience")==false)&&(Compare(bachelor_degree,"Mathematics")==false)&&
            (Compare(bachelor_degree,"Engineering")==false)&&(Compare(bachelor_degree,"related")==false))
             return true;
             return false;
      }
+     
+     function tests_scores() internal returns(uint){
+            return (test_mark_SQL+test_mark_Azure+test_mark_python);
+     }
+     
      function final_mark() public  returns (uint) {
          uint e;
          uint mark;
@@ -91,7 +94,7 @@ contract junior_database_administrator {
         e= english_level();
         if(test_mark_SQL<5 || test_mark_Azure<5 || e==0 || communication_skills<5 )
              return 0;
-         mark=e+test_mark_SQL+test_mark_Azure+communication_skills+previous_exp+test_mark_python;
+         mark=e+tests_scores()+communication_skills+previous_exp;
          return mark;
      }
         
@@ -129,7 +132,9 @@ contract senior_database_administrator is junior_database_administrator {
             return masters_degree;
         }
         
-        function 
+        function tests_scores() internal returns (uint){
+            return (tests_scores()+test_mark_Linux);
+        }
         
         function  final_mark() public returns (uint) {
          uint e;
@@ -140,7 +145,9 @@ contract senior_database_administrator is junior_database_administrator {
            return 0;
          if (test_mark_SQL<7 || test_mark_Azure<7 || e==0 || communication_skills<7 || test_mark_Linux<7)
              return 0;
-         mark=e+test_mark_SQL+test_mark_Azure+communication_skills+previous_exp+test_mark_python+test_mark_Linux;
+         if (previous_exp<2)
+             return 0;
+         mark=e+tests_scores()+communication_skills+previous_exp;
          return mark;
            
         }
