@@ -1,8 +1,7 @@
 pragma solidity >=0.4.22 <0.6.0;
 
 contract junior_database_administrator {
-    
-    mapping (bytes32 => uint) public finalmark;
+
     string public name;
     uint public age;
     uint internal test_mark_SQL;
@@ -12,6 +11,12 @@ contract junior_database_administrator {
     string internal english_knowledge;
     uint internal test_mark_python;
     string internal bachelor_degree;
+    event Log(string);
+    
+    uint ItemCount;
+    mapping (string => uint) other_certificates;
+    uint[] public Importance;
+
     
     function stringToBytes32(string memory source) internal returns (bytes32 result) {
     bytes memory tempEmptyStringTest = bytes(source);
@@ -37,13 +42,12 @@ contract junior_database_administrator {
         return true;
     }
     
-    constructor(string memory _name, uint _age, string memory _bachelor_degree, uint _test_mark_SQL, uint _test_mark_Azure,
+    constructor (string memory _name, uint _age, string memory _bachelor_degree, uint _test_mark_SQL, uint _test_mark_Azure,
                uint _communication_skills, string memory _english_knowledge, uint _previous_exp, uint _test_mark_python
                 ) internal {
                    name=_name;
                    age=_age;
                    bachelor_degree=_bachelor_degree;
-                   if (_test_mark_SQL>0 )
                    test_mark_SQL=_test_mark_SQL;
                    test_mark_Azure=_test_mark_Azure;
                    communication_skills = _communication_skills;
@@ -53,6 +57,17 @@ contract junior_database_administrator {
                 }
                 
     
+    function setcertificates(uint _importance, string memory _name) public {
+         uint certificate = _importance;
+         other_certificates[_name] = certificate;
+         Importance.push(certificate);
+        ItemCount++;
+    }
+    
+    function getcertificate(string memory _name) public returns (uint importance){
+        return(other_certificates[_name]);
+    }
+    
     function give_mark_SQL(uint mark) public {
         
         require(mark>0 && mark <=10);
@@ -60,12 +75,18 @@ contract junior_database_administrator {
     }
     
     function give_mark_Azure(uint mark) public {
-        
-        require(mark>0 && mark <=10);
-        test_mark_Azure=mark;
+      
+     emit Log("Within function give_mark_Azure");
+      if(mark<0 || mark >10){
+          revert();
+      }
+     emit Log("Value is within expected range");
+     emit Log("Returning value from function");
+      
     }
     
     
+
     function english_level() internal returns (uint){
         
         if (Compare(english_knowledge,"intermediate")==false) 
@@ -86,7 +107,7 @@ contract junior_database_administrator {
             return (test_mark_SQL+test_mark_Azure+test_mark_python);
      }
      
-     function final_mark() public  returns (uint) {
+     function final_mark() public returns (uint) {
          uint e;
          uint mark;
          if (bachelors() && (test_mark_SQL<8 || test_mark_Azure<8))
@@ -107,7 +128,7 @@ contract senior_database_administrator is junior_database_administrator {
     uint private test_mark_Linux;
     bool private masters_degree;
     
-         constructor(string memory _name, uint _age, string memory _bachelor_degree, uint _test_mark_SQL, uint _test_mark_Azure,
+         constructor (string memory _name, uint _age, string memory _bachelor_degree, uint _test_mark_SQL, uint _test_mark_Azure,
                uint _communication_skills, string memory _english_knowledge, uint _previous_exp, uint _test_mark_python,
                   uint _test_mark_Linux, bool _masters_degree ) internal {
                    name=_name;
@@ -132,6 +153,20 @@ contract senior_database_administrator is junior_database_administrator {
             return masters_degree;
         }
         
+        function give_mark_Linux(uint mark) public {
+       emit Log("Within function give_mark_Linux");
+      if(mark<0 || mark >10){
+          revert();
+      }
+     emit Log("Value is within expected range");
+     emit Log("Returning value from function");
+        }
+    
+         function masters(bool ok) public {
+        masters_degree=ok;
+         }
+    
+        
         function tests_scores() internal returns (uint){
             return (tests_scores()+test_mark_Linux);
         }
@@ -154,3 +189,4 @@ contract senior_database_administrator is junior_database_administrator {
         
     
 }
+
